@@ -27,6 +27,7 @@ const visibleItems = getVisibleExpenses(state.expenses, state.filters);
 */
 //console.log(visibleItems);
 // {/** redux provider */}
+
 const jsx = (
     <Provider store={store} >
         <AppRouter />

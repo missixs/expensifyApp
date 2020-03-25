@@ -155,3 +155,6 @@ git remote -v
 template is:
 git push    remote branch 
 git push -u origin master 
+
+if encountered errors, use
+ git pull --rebase git@github.com:shahazat/expensifyApp.git
