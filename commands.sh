@@ -126,4 +126,32 @@ goto root of project
 1)
 git init
 
-ss
+git add . //add all files 
+
+git commit -m "YOUR MESSAGE "
+
+git status
+git log
+
+google connecting to git via ssh 
+
+communicating to github via ssh: 
+ls -a ~/.ssh this is where ssh keys exist
+ssh-keygen -t rsa -b 4096 -C "ashkaninia@gmail.com" //add new one, just hit enter
+eval "$(ssh-agent -s)"
+
+ssh-add ~/.ssh/id_rsa
+sudo apt-get install xclip
+xclip -sel clip < ~/.ssh/id_rsa.pub //this copies ssh key 
+
+go to github->profile-> ssh and gpg keys  press ctrl+v to paste and add a new ssh key 
+
+goto github repo and from clone menu select ssh 
+
+git remote add origin git@github.com:shahazat/expensifyApp.git
+git remote -v 
+
+//-u is used one time 
+template is:
+git push    remote branch 
+git push -u origin master 
