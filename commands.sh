@@ -185,4 +185,5 @@ git push heroku master  //this should build and deploy your app.
 heroku open 
 heroku logs 
 
-//yarn install --production : creates node_modules, not devDependencies 
+//yarn install --production : creates node_modules, not devDependencies
+yarn add X --dev  
