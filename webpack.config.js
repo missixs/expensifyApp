@@ -33,12 +33,12 @@ module.exports = (env) => {
                         use: [
                             //'css-loader', 'sass-loader'
                             {
-                                loader: 'css',
+                                loader: 'css-loader',
                                 options: {
                                     sourceMap: true
                                 }
                             }, {
-                                loader: 'sass',
+                                loader: 'sass-loader',
                                 options: {
                                     sourceMap: true
                                 }

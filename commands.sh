@@ -158,3 +158,20 @@ git push -u origin master
 
 if encountered errors, use
  git pull --rebase git@github.com:shahazat/expensifyApp.git
+
+express is web framework for Node.js
+expressjs.com
+yarn add express@4.15.4
+node server/server.js to run it!
+
+Heroku is application deployment platform like AWS Elastic Beanstalk or DigitalOcean 
+we use it via heroku cli 
+
+sudo snap install --classic heroku
+
+heroku --version
+heroku login 
+heruku create YOUR_APP_NAME
+
+
+git remote : shows heroku 
