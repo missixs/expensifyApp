@@ -17,9 +17,8 @@ export const addExpenseSimple = (expense) => ({
     expense
 });
 
-
 export const startAddExpense = (expenseData = {}) => {
-    console.log(firebaseConfig);
+
     return (dispatch) => { //it is called by redux and dispatch is passed in it.
         const {
             description = '',
@@ -49,3 +48,37 @@ export const editExpense = (id, updates) => ({
     updates
 });
 
+// SET_EXPENSES
+export const setExpenses = (expenses) =>({
+    type:'SET_EXPENSES',
+    expenses
+});
+
+export const startSetExpenses = () =>{
+    setTimeout(()=>{}, 1500);
+    // return {
+    //     type:'s'
+    // };
+
+    return (dispatch) => { //it is called by redux and dispatch is passed in it.
+  
+        
+        return database.ref('expenses').once('value').then((snapshot)=>{
+            const expenses = [];
+
+            snapshot.forEach((childSnapshot)=>{
+              expenses.push({
+                id:childSnapshot.key,
+                ...childSnapshot.val()
+              });
+            });
+
+            dispatch(setExpenses(expenses));
+        
+        }).catch((e)=>{
+            console.log('Failed !...', e)
+        });
+        
+    }
+
+} ;
