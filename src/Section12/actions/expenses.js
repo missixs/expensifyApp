@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import database, {logAllDatabase, firebaseConfig} from '../firebase/firebase';
+import database, { logAllDatabase, firebaseConfig } from '../firebase/firebase';
 
 export const addExpense = ({ description: desc = '', note = '', amount: amnt = 0, createdAt: crtat = 0 } = {}) => ({
     type: 'ADD_EXPENSE',
@@ -31,7 +31,7 @@ export const startAddExpense = (expenseData = {}) => {
         return database.ref('expenses').push(expense).then((ref) => { //return added for chaining 
             //logAllDatabase();
             dispatch(addExpenseSimple({ id: ref.key, ...expense }))
-        }).catch((e)=>{
+        }).catch((e) => {
             console.log('Failed !...', e)
         });
     }
@@ -42,43 +42,61 @@ export const removeExpense = ({ id } = {}) => ({
     teBeDeleted: id
 });
 
+export const startRemoveExpense = ({ id } = {}) => {
+    return (dispatch) => {
+        
+        return database.ref(`expenses/${id}`).remove().then(()=>{
+            dispatch(removeExpense({ id }));
+        });
+    }
+}
+
 export const editExpense = (id, updates) => ({
     type: 'EDIT_EXPENSE',
     id,
     updates
 });
 
+export const startEditExpense = (id, updates) => {
+    return (dispatch) => {
+        return database.ref(`expenses/${id}`).update(updates).then(()=>{
+            dispatch(editExpense(id, updates));
+        });
+
+    };
+};
+
 // SET_EXPENSES
-export const setExpenses = (expenses) =>({
-    type:'SET_EXPENSES',
+export const setExpenses = (expenses) => ({
+    type: 'SET_EXPENSES',
     expenses
 });
 
-export const startSetExpenses = () =>{
-    setTimeout(()=>{}, 1500);
+export const startSetExpenses = () => {
+    setTimeout(() => { }, 1500);
     // return {
     //     type:'s'
     // };
 
     return (dispatch) => { //it is called by redux and dispatch is passed in it.
-  
-        
-        return database.ref('expenses').once('value').then((snapshot)=>{
+
+
+        return database.ref('expenses').once('value').then((snapshot) => {
             const expenses = [];
 
-            snapshot.forEach((childSnapshot)=>{
-              expenses.push({
-                id:childSnapshot.key,
-                ...childSnapshot.val()
-              });
+            snapshot.forEach((childSnapshot) => {
+                expenses.push({
+                    id: childSnapshot.key,
+                    ...childSnapshot.val()
+                });
             });
 
             dispatch(setExpenses(expenses));
-        
-        }).catch((e)=>{
+
+        }).catch((e) => {
             console.log('Failed !...', e)
         });
-        
+
     }
 
-} ;
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm';
-import { editExpense, removeExpense } from '../actions/expenses';
+import { editExpense, removeExpense, startRemoveExpense, startEditExpense } from '../actions/expenses';
 
 // named export to be used in test 
 export class EditExpensePage extends React.Component {
@@ -37,8 +37,8 @@ const mapStore2State = (state, props) => ({ //we can access props here!
 
 const mapDispatch2Props = (dispatch, props)=>{
     return {
-        onEditClick:  (id, expense) => dispatch(editExpense(id, expense)),
-        onDeleteClick: (obj) => dispatch(removeExpense(obj))
+        onEditClick:  (id, expense) => dispatch(startEditExpense(id, expense)),
+        onDeleteClick: (obj) => dispatch(startRemoveExpense(obj))
     };
 }
 

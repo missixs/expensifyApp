@@ -1,4 +1,4 @@
-import { editExpense, removeExpense, addExpense, addExpenseSimple, startAddExpense , setExpenses, startSetExpenses} from '../../actions/expenses';
+import { editExpense, removeExpense, addExpense, addExpenseSimple, startAddExpense , setExpenses, startSetExpenses, startRemoveExpense, startEditExpense} from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -152,9 +152,67 @@ test('should fetch the expenses from database ', (done)=>{
         });
         done();
     });
+});
+
+test('should remove expense from firebase ', (done)=>{
+    const store = createMockStore({});
+    store.dispatch(startRemoveExpense({id:expenses[0].id})).then(()=>{
+        const action = store.getActions();
+        expect(action[0]).toEqual({
+            type:'REMOVE_EXPENSE',
+            teBeDeleted: expenses[0].id
+        });
+
+        return database.ref(`expenses/${action[0].teBeDeleted}`).once('value');
+    }).then((snapshot)=>{
+        expect(snapshot.val()).toBeNull();
+        done();
+
+    });
 
 });
 
+
+test('should edit expense in database ', (done)=>{
+    const store = createMockStore({});
+    const id = expenses[0].id;
+
+    const toBeUpdated= {
+        createdAt: 15152022,
+        description:'This Edited Txt.'
+    }
+    
+    store.dispatch(startEditExpense(id, toBeUpdated)).then( ()=>{
+        const action = store.getActions();
+        expect(action[0]).toEqual({
+            type:'EDIT_EXPENSE',
+            id,
+            updates: toBeUpdated
+        });
+
+        return database.ref(`expenses/${id}`).once('value');
+    }).then((snapshot)=>{
+        
+        expect(snapshot.val()).toEqual({
+                description:toBeUpdated.description ,
+                amount:expenses[0].amount ,
+                createdAt:toBeUpdated.createdAt ,
+                note:expenses[0].note ,
+            });
+
+        // expect(subscription.val()).toEqual({
+        //     description:toBeUpdated.description ,
+        //     amount:expenses[0].amount ,
+        //     createdAt:toBeUpdated.createdAt ,
+        //     note:expenses[0].note ,
+        // });
+        done();
+
+    });
+});
+/*
+
+*/
 // not his responsibity anymore, someone else is filling defaults 
 // test('Shouls setup add expense action object with default values',()=>{
 //     const expected = { description: '', note : '', amount: 0, createdAt: 0 };
