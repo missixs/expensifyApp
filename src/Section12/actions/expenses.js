@@ -19,7 +19,9 @@ export const addExpenseSimple = (expense) => ({
 
 export const startAddExpense = (expenseData = {}) => {
 
-    return (dispatch) => { //it is called by redux and dispatch is passed in it.
+    return (dispatch, getState) => { //it is called by redux and dispatch is passed in it.
+        const uid = getState().auth.uid;
+
         const {
             description = '',
             note = '',
@@ -28,7 +30,7 @@ export const startAddExpense = (expenseData = {}) => {
         } = expenseData;//just simple destructuring
 
         const expense = { description, note, amount, createdAt }; // constructing an object 
-        return database.ref('expenses').push(expense).then((ref) => { //return added for chaining 
+        return database.ref(`users/${uid}/expenses`).push(expense).then((ref) => { //return added for chaining 
             //logAllDatabase();
             dispatch(addExpenseSimple({ id: ref.key, ...expense }))
         }).catch((e) => {
@@ -43,9 +45,10 @@ export const removeExpense = ({ id } = {}) => ({
 });
 
 export const startRemoveExpense = ({ id } = {}) => {
-    return (dispatch) => {
-        
-        return database.ref(`expenses/${id}`).remove().then(()=>{
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
+
+        return database.ref(`users/${uid}/expenses/${id}`).remove().then(()=>{
             dispatch(removeExpense({ id }));
         });
     }
@@ -58,8 +61,10 @@ export const editExpense = (id, updates) => ({
 });
 
 export const startEditExpense = (id, updates) => {
-    return (dispatch) => {
-        return database.ref(`expenses/${id}`).update(updates).then(()=>{
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
+
+        return database.ref(`users/${uid}/expenses/${id}`).update(updates).then(()=>{
             dispatch(editExpense(id, updates));
         });
 
@@ -73,15 +78,15 @@ export const setExpenses = (expenses) => ({
 });
 
 export const startSetExpenses = () => {
-    setTimeout(() => { }, 1500);
     // return {
     //     type:'s'
     // };
+    return (dispatch, getState) => { //it is called by redux and dispatch is passed in it.
+       
+        const uid = getState().auth.uid;
 
-    return (dispatch) => { //it is called by redux and dispatch is passed in it.
-
-
-        return database.ref('expenses').once('value').then((snapshot) => {
+       
+        return database.ref(`users/${uid}/expenses`).once('value').then((snapshot) => {
             const expenses = [];
 
             snapshot.forEach((childSnapshot) => {
@@ -96,7 +101,5 @@ export const startSetExpenses = () => {
         }).catch((e) => {
             console.log('Failed !...', e)
         });
-
     }
-
 };

@@ -8,11 +8,14 @@ import 'react-dates/lib/css/_datepicker.css'
 // import './firebase/firebase_playground';
 // import './firebase/promises_raw_playground';
 
-import AppRouter from './routers/AppRouter'
+import { firebase } from './firebase/firebase';
+import AppRouter, { history } from './routers/AppRouter'
 import configureStore from './store/configureStore';
 import { startSetExpenses } from './actions/expenses'
 import { setTextFilter, sortByAmount, sortByDate, setStartDate, setEndDate } from './actions/filters'
 import getVisibleExpenses from './selectors/expenses';
+import {login, logout} from './actions/auth';
+
 
 const store = configureStore();
 
@@ -30,15 +33,42 @@ const visibleItems = getVisibleExpenses(state.expenses, state.filters);
 // {/** redux provider */}
 
 const jsx = (
+
     <Provider store={store} >
         <AppRouter />
-
     </Provider>
+
 );
 
 ReactDOM.render(<p>Loading... </p>, document.getElementById('appdiv'));
 
-store.dispatch(startSetExpenses()).then(()=>{
-    ReactDOM.render(jsx, document.getElementById('appdiv'));
-})
+let hasRendered = false;
+const renderApp = () => {
+    if (!hasRendered)
+        ReactDOM.render(jsx, document.getElementById('appdiv'));
+    hasRendered = true;
+};
 
+
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {//this is passed even if user starts in other pages 
+        store.dispatch(login(user.uid));
+
+        store.dispatch(startSetExpenses()).then(() => {
+            renderApp();
+            if(history.location.pathname === '/'){
+                history.push('/dashboard');
+            }
+
+        })
+
+        //console.log('log in');
+
+    } else {//logged out 
+        store.dispatch(logout());
+
+        renderApp();
+        history.push('/');
+        console.log('log out');
+    }
+});

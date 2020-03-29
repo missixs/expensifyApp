@@ -1,5 +1,9 @@
 import firebase from 'firebase/app';
 import 'firebase/database';
+import 'firebase/auth';
+
+// import * as firebase from 'firebase';
+
 export const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN ,
@@ -12,8 +16,7 @@ export const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
-
-
+const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 const logAllDatabase = () => {
 
   //console.log('################### Here is snapshot of all contents of Database #############');
@@ -34,4 +37,5 @@ const logAllDatabase = () => {
     //console.log('###########################################################################');
 
 }
-export { logAllDatabase, firebase, database as default };
+//export { logAllDatabase, firebase, database , googleAuthProvider as default };
+export { googleAuthProvider, logAllDatabase, firebase, database as default };
